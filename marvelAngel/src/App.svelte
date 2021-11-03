@@ -18,17 +18,54 @@
 		descripcion: "",
 	};
 
-	function addFilm(){
-		alert("Addfilm");
-	}
+	let peliculas = [];
 
+	const loadData = async () => {
+		const querySnapshot = await getDocs(collection(db, "peliculas"));
+		let docs = [];
+		querySnapshot.forEach((doc) => {
+			docs.push({ ...doc.data(), id: doc.id });
+		});
+		peliculas = [...docs];
+		console.log(peliculas);
+	};
+	loadData();
+
+	const vaciarFormulario = () => {
+		pelicula = {
+			titulo: "",
+			fase: "",
+			descripcion: "",
+		};
+	};
+
+	const añadirElemento = async () => {
+		await addDoc(collection(db, "peliculas"), pelicula);
+		await loadData();
+		vaciarFormulario();	
+	};
+
+	const onSubmitHandler = (e) => {
+		añadirElemento();
+	};
+	
 </script>
 
 <main>
 	<h1>Marvel</h1>
 	<h2>Peliculas de Marvel</h2>
+	<br><br><br>
+		{#each peliculas as p, i}
+			<!-- Elemento -->
+			<div class="bg-white rounded-lg sahdow-lg overflow-hidden border m-1 flex flex-col md:flex-row">
+				<p>{p.titulo}</p>
+			</div>
+			<!-- Fin elemento -->
+		{/each}
+	<br><br><br>
+	
 
-	<form on:submit|preventDefault={addFilm}>
+	<form on:submit|preventDefault={onSubmitHandler}>
 		<label for="titulo">Titulo de pelicula</label>
 		<input
 			bind:value={pelicula.titulo}
