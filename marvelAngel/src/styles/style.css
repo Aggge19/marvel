@@ -1,8 +1,8 @@
 main {
 	text-align: center;
 	padding: 1em;
-	max-width: 240px;
 	margin: 0 auto;
+	width: 100%;
 }
 
 h1 {
@@ -11,6 +11,13 @@ h1 {
 	font-size: 4em;
 	font-weight: 100;
 }
+
+.peliculas{
+	width: 49%;
+	border: 1px solid black;
+	float: left;
+}
+
 
 @media (min-width: 640px) {
 	main {

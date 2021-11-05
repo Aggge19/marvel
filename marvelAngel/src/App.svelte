@@ -20,14 +20,30 @@
 
 	let peliculas = [];
 
+	let superheroe = {
+		nombre: "",
+		poder: "",
+		descripcion: "",
+	};
+
+	let superheroes = [];
+
 	const loadData = async () => {
-		const querySnapshot = await getDocs(collection(db, "peliculas"));
-		let docs = [];
-		querySnapshot.forEach((doc) => {
-			docs.push({ ...doc.data(), id: doc.id });
+		// Cargamos las peliculas
+		const querySnapshotPeliculas = await getDocs(collection(db, "peliculas"));
+		let docsPeliculas = [];
+		querySnapshotPeliculas.forEach((doc) => {
+			docsPeliculas.push({ ...doc.data(), id: doc.id });
 		});
-		peliculas = [...docs];
-		console.log(peliculas);
+		peliculas = [...docsPeliculas];
+
+		// //Cargamos los superheroes
+		// const querySnapshotSuperheroes = await getDocs(collection(db, "superheroes"));
+		// let docsSuperheroes = [];
+		// querySnapshotSuperheroes.forEach((doc) => {
+		// 	docsSuperheroes.push({ ...doc.data(), id: doc.id });
+		// });
+		// peliculas = [...docsSuperheroes];
 	};
 	loadData();
 
@@ -39,57 +55,124 @@
 		};
 	};
 
-	const añadirElemento = async () => {
+	const añadirPelicula = async () => {
 		await addDoc(collection(db, "peliculas"), pelicula);
 		await loadData();
 		vaciarFormulario();	
 	};
 
+	// const añadirSuperheroe = async () => {
+	// 	await addDoc(collection(db, "superheroes"), superheroe);
+	// 	await loadData();
+	// 	vaciarFormulario();	
+	// };
+
+	const eliminarPelicula = async (id) => {
+		await deleteDoc(doc(db, "peliculas", id));
+		await loadData();
+	};
+
+	// const eliminarSuperheroe = async (id) => {
+	// 	await deleteDoc(doc(db, "superheroes", id));
+	// 	await loadData();
+	// };
+
 	const onSubmitHandler = (e) => {
-		añadirElemento();
+		if(pelicula.titulo !== ""){
+			añadirPelicula();
+		}
+		if(superheroe.nombre !== ""){
+			añadirSuperheroe();
+		}
 	};
 	
 </script>
 
 <main>
 	<h1>Marvel</h1>
-	<h2>Peliculas de Marvel</h2>
-	<br><br><br>
+
+
+	<div class="peliculas">
+		<h2>Peliculas de Marvel</h2>
+
 		{#each peliculas as p, i}
-			<!-- Elemento -->
 			<div class="bg-white rounded-lg sahdow-lg overflow-hidden border m-1 flex flex-col md:flex-row">
-				<p>{p.titulo}</p>
+				<p>{p.titulo}
+				<button 
+					class="ml-5 bg-blue-200 py-1 px-2 border border-blue-500 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-blue-500 hover:text-gray-100 focus:ring-2 focus:ring-offset-2 focus:ring-blue-300 focus:text-gray-700 focus:bg-blue-200"
+					on:click={eliminarPelicula(p.id)}>
+					Eliminar
+				</button></p>
 			</div>
-			<!-- Fin elemento -->
 		{/each}
-	<br><br><br>
-	
-
-	<form on:submit|preventDefault={onSubmitHandler}>
-		<label for="titulo">Titulo de pelicula</label>
-		<input
-			bind:value={pelicula.titulo}
-			id="titulo"
-			type="text"
-		/>
 		
-		<label for="fase">Fase</label>
-		<select bind:value={pelicula.fase} id="fase">
-			<option value="1" selected>Fase 1</option>
-			<option value="2">Fase 2</option>
-			<option value="3">Fase 3</option>
-		</select>
 
-		<label for="descripcion">Descripción</label>
-		<textarea
-			bind:value={pelicula.descripcion}
-			id="descripcion"
-			rows="1"
-		/>
+		<form on:submit|preventDefault={onSubmitHandler}>
+			<label for="titulo">Titulo de pelicula</label>
+			<input
+				bind:value={pelicula.titulo}
+				id="titulo"
+				type="text"
+			/>
+			
+			<label for="fase">Fase</label>
+			<select bind:value={pelicula.fase} id="fase">
+				<option value="1" selected>Fase 1</option>
+				<option value="2">Fase 2</option>
+				<option value="3">Fase 3</option>
+			</select>
 
-		<br>
-		<button type="submit">Enviar</button>
-	</form>
+			<label for="descripcion">Descripción</label>
+			<textarea
+				bind:value={pelicula.descripcion}
+				id="descripcion"
+				rows="1"
+			/>
 
+			<br>
+			<button type="submit">Enviar</button>
+		</form>
+	</div>
+<!-- <div class="Superheroes">
+		<h2>Superheroes de Marvel</h2>
+		
+		{#each superheroes as s, i}
+			<div class="bg-white rounded-lg sahdow-lg overflow-hidden border m-1 flex flex-col md:flex-row">
+				<p>{s.nombre}
+				<button 
+					class="ml-5 bg-blue-200 py-1 px-2 border border-blue-500 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-blue-500 hover:text-gray-100 focus:ring-2 focus:ring-offset-2 focus:ring-blue-300 focus:text-gray-700 focus:bg-blue-200"
+					on:click={eliminarSuperheroe(s.id)}>
+					Eliminar
+				</button></p>
+			</div>
+		{/each}
+		
+
+		<form on:submit|preventDefault={onSubmitHandler}>
+			<label for="nombre">Nombre del superheroe</label>
+			<input
+				bind:value={superheroe.nombre}
+				id="nombre"
+				type="text"
+			/>
+			
+			<label for="poder">Poder</label>
+			<input
+				bind:value={superheroe.poder}
+				id="poder"
+				type="text"
+			/>
+
+			<label for="descripcion">Descripción</label>
+			<textarea
+				bind:value={superheroe.descripcion}
+				id="descripcion"
+				rows="1"
+			/>
+
+			<br>
+			<button type="submit">Enviar</button>
+		</form>
+	</div> -->
 
 </main>
