@@ -17,7 +17,11 @@ h1 {
 	border: 1px solid black;
 	float: left;
 }
-
+.superheroes{
+	width: 49%;
+	border: 1px solid black;
+	float: left;
+}
 
 @media (min-width: 640px) {
 	main {

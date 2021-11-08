@@ -28,7 +28,7 @@
 
 	let superheroes = [];
 
-	const loadData = async () => {
+	const loadDataPeliculas = async () => {
 		// Cargamos las peliculas
 		const querySnapshotPeliculas = await getDocs(collection(db, "peliculas"));
 		let docsPeliculas = [];
@@ -36,18 +36,27 @@
 			docsPeliculas.push({ ...doc.data(), id: doc.id });
 		});
 		peliculas = [...docsPeliculas];
+	};
+	const loadDataSuperheroes = async () => {
 
-		// //Cargamos los superheroes
-		// const querySnapshotSuperheroes = await getDocs(collection(db, "superheroes"));
-		// let docsSuperheroes = [];
-		// querySnapshotSuperheroes.forEach((doc) => {
-		// 	docsSuperheroes.push({ ...doc.data(), id: doc.id });
-		// });
-		// peliculas = [...docsSuperheroes];
+		//Cargamos los superheroes
+		const querySnapshotSuperheroes = await getDocs(collection(db, "superheroes"));
+		let docsSuperheroes = [];
+		querySnapshotSuperheroes.forEach((doc) => {
+			docsSuperheroes.push({ ...doc.data(), id: doc.id });
+		});
+		superheroes = [...docsSuperheroes];
+	};
+	const loadData = async () => {
+		// Cargamos las peliculas
+		loadDataPeliculas();
+
+		//Cargamos los superheroes
+		loadDataSuperheroes();
 	};
 	loadData();
 
-	const vaciarFormulario = () => {
+	const vaciarFormularioPelicula = () => {
 		pelicula = {
 			titulo: "",
 			fase: "",
@@ -55,37 +64,47 @@
 		};
 	};
 
-	const añadirPelicula = async () => {
-		await addDoc(collection(db, "peliculas"), pelicula);
-		await loadData();
-		vaciarFormulario();	
+	const vaciarFormularioSuperheroe = () => {
+		superheroe = {
+			nombre: "",
+			poder: "",
+			descripcion: "",
+		}
 	};
 
-	// const añadirSuperheroe = async () => {
-	// 	await addDoc(collection(db, "superheroes"), superheroe);
-	// 	await loadData();
-	// 	vaciarFormulario();	
-	// };
+	const añadirPelicula = async () => {
+		await addDoc(collection(db, "peliculas"), pelicula);
+		await loadDataPeliculas();
+		vaciarFormularioPelicula();	
+	};
+
+	const añadirSuperheroe = async () => {
+		await addDoc(collection(db, "superheroes"), superheroe);
+		await loadDataSuperheroes();
+		vaciarFormularioSuperheroe();	
+	};
 
 	const eliminarPelicula = async (id) => {
 		await deleteDoc(doc(db, "peliculas", id));
-		await loadData();
+		await loadDataPeliculas();
 	};
 
-	// const eliminarSuperheroe = async (id) => {
-	// 	await deleteDoc(doc(db, "superheroes", id));
-	// 	await loadData();
-	// };
+	const eliminarSuperheroe = async (id) => {
+		await deleteDoc(doc(db, "superheroes", id));
+		await loadDataSuperheroes();
+	};
 
 	const onSubmitHandler = (e) => {
 		if(pelicula.titulo !== ""){
 			añadirPelicula();
 		}
+	};
+	const onSubmitHandler2 = (e) => {
 		if(superheroe.nombre !== ""){
 			añadirSuperheroe();
 		}
 	};
-	
+
 </script>
 
 <main>
@@ -122,6 +141,16 @@
 				<option value="3">Fase 3</option>
 			</select>
 
+
+			<label for="super">Superheroe</label>
+			<!--bind:value={pelicula.fase}    ******  va dentro del select-->
+			<select id="fase">
+				{#each superheroes as s, i}
+					<option value="{s.id}">{s.nombre}</option>
+				{/each}
+			</select>
+
+			
 			<label for="descripcion">Descripción</label>
 			<textarea
 				bind:value={pelicula.descripcion}
@@ -130,10 +159,11 @@
 			/>
 
 			<br>
-			<button type="submit">Enviar</button>
+			<button type="submit">Añadir</button>
 		</form>
 	</div>
-<!-- <div class="Superheroes">
+	
+	<div class="superheroes">
 		<h2>Superheroes de Marvel</h2>
 		
 		{#each superheroes as s, i}
@@ -148,7 +178,7 @@
 		{/each}
 		
 
-		<form on:submit|preventDefault={onSubmitHandler}>
+		<form on:submit|preventDefault={onSubmitHandler2}>
 			<label for="nombre">Nombre del superheroe</label>
 			<input
 				bind:value={superheroe.nombre}
@@ -171,8 +201,8 @@
 			/>
 
 			<br>
-			<button type="submit">Enviar</button>
+			<button type="submit">Añadir</button>
 		</form>
-	</div> -->
+	</div>
 
 </main>
