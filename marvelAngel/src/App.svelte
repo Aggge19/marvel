@@ -150,7 +150,6 @@
 				{/each}
 			</select>
 
-			
 			<label for="descripcion">Descripción</label>
 			<textarea
 				bind:value={pelicula.descripcion}
