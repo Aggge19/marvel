@@ -140,10 +140,10 @@
 				<option value="2">Fase 2</option>
 				<option value="3">Fase 3</option>
 			</select>
-
+    
 
 			<label for="super">Superheroe</label>
-			<!--bind:value={pelicula.fase}    ******  va dentro del select-->
+	<!--    bind:value={pelicula.fase}    ******  va dentro del select    -->
 			<select id="fase">
 				{#each superheroes as s, i}
 					<option value="{s.id}">{s.nombre}</option>
