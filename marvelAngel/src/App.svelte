@@ -1,6 +1,5 @@
 <script>
 	import './styles/style.css';
-
 	//db
 	import { db } from "./firebase";
 	import {
@@ -11,24 +10,19 @@
 		updateDoc,
 		deleteDoc,
 	} from "firebase/firestore";
-
 	let pelicula = {
 		titulo: "",
 		fase: "",
 		descripcion: "",
 		protagonista: "",
 	};
-
 	let peliculas = [];
-
 	let superheroe = {
 		nombre: "",
 		poder: "",
 		descripcion: "",
 	};
-
 	let superheroes = [];
-
 	const loadDataPeliculas = async () => {
 		// Cargamos las peliculas
 		const querySnapshotPeliculas = await getDocs(collection(db, "peliculas"));
@@ -39,7 +33,6 @@
 		peliculas = [...docsPeliculas];
 	};
 	const loadDataSuperheroes = async () => {
-
 		//Cargamos los superheroes
 		const querySnapshotSuperheroes = await getDocs(collection(db, "superheroes"));
 		let docsSuperheroes = [];
@@ -51,12 +44,10 @@
 	const loadData = async () => {
 		// Cargamos las peliculas
 		loadDataPeliculas();
-
 		//Cargamos los superheroes
 		loadDataSuperheroes();
 	};
 	loadData();
-
 	const vaciarFormularioPelicula = () => {
 		pelicula = {
 			titulo: "",
@@ -65,7 +56,6 @@
 			protagonista: "",
 		};
 	};
-
 	const vaciarFormularioSuperheroe = () => {
 		superheroe = {
 			nombre: "",
@@ -73,29 +63,24 @@
 			descripcion: "",
 		}
 	};
-
 	const añadirPelicula = async () => {
 		await addDoc(collection(db, "peliculas"), pelicula);
 		await loadDataPeliculas();
 		vaciarFormularioPelicula();	
 	};
-
 	const añadirSuperheroe = async () => {
 		await addDoc(collection(db, "superheroes"), superheroe);
 		await loadDataSuperheroes();
 		vaciarFormularioSuperheroe();	
 	};
-
 	const eliminarPelicula = async (id) => {
 		await deleteDoc(doc(db, "peliculas", id));
 		await loadDataPeliculas();
 	};
-
 	const eliminarSuperheroe = async (id) => {
 		await deleteDoc(doc(db, "superheroes", id));
 		await loadDataSuperheroes();
 	};
-
 	const onSubmitHandler = (e) => {
 		if(pelicula.titulo !== ""){
 			añadirPelicula();
@@ -106,7 +91,6 @@
 			añadirSuperheroe();
 		}
 	};
-
 </script>
 
 <main>
@@ -115,18 +99,33 @@
 
 	<div class="peliculas">
 		<h2>Peliculas de Marvel</h2>
-
-		{#each peliculas as p, i}
-			<div class="bg-white rounded-lg sahdow-lg overflow-hidden border m-1 flex flex-col md:flex-row">
-				<p>{p.titulo}
-				<button 
-					class="ml-5 bg-blue-200 py-1 px-2 border border-blue-500 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-blue-500 hover:text-gray-100 focus:ring-2 focus:ring-offset-2 focus:ring-blue-300 focus:text-gray-700 focus:bg-blue-200"
-					on:click={eliminarPelicula(p.id)}>
-					Eliminar
-				</button></p>
-			</div>
-		{/each}
-		
+		<div class="bg-white rounded-lg sahdow-lg overflow-hidden border m-1 flex flex-col md:flex-row" id="t1">
+			<table>
+				<tr>
+					<th>Titulo</th>
+					<th>Fase</th>
+					<th>Superhero</th>
+					<th></th>
+				</tr>
+				{#each peliculas as p}
+						<tr>
+							<td>{p.titulo}</td>
+							<td>{p.fase}</td>
+							{#each superheroes as s}
+								{#if p.protagonista===s.id}
+									<td>{s.nombre}</td>
+								{/if}
+							{/each}
+							<td>
+							<button 
+								class="ml-5 bg-blue-200 py-1 px-2 border border-blue-500 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-blue-500 hover:text-gray-100 focus:ring-2 focus:ring-offset-2 focus:ring-blue-300 focus:text-gray-700 focus:bg-blue-200"
+								on:click={eliminarPelicula(p.id)}>
+								Eliminar
+							</button></td>
+						</tr>
+				{/each}
+			</table>
+		</div>
 
 		<form on:submit|preventDefault={onSubmitHandler}>
 			<label for="titulo">Titulo de pelicula</label>
@@ -141,6 +140,7 @@
 				<option value="1" selected>Fase 1</option>
 				<option value="2">Fase 2</option>
 				<option value="3">Fase 3</option>
+				<option value="4">Fase 4</option>
 			</select>
     
 
@@ -166,11 +166,10 @@
 	<div class="superheroes">
 		<h2>Superheroes de Marvel</h2>
 		
-		{#each superheroes as s, i}
+		{#each superheroes as s}
 			<div class="bg-white rounded-lg sahdow-lg overflow-hidden border m-1 flex flex-col md:flex-row">
 				<p>{s.nombre}
-				<button 
-					class="ml-5 bg-blue-200 py-1 px-2 border border-blue-500 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-blue-500 hover:text-gray-100 focus:ring-2 focus:ring-offset-2 focus:ring-blue-300 focus:text-gray-700 focus:bg-blue-200"
+				<button
 					on:click={eliminarSuperheroe(s.id)}>
 					Eliminar
 				</button></p>
