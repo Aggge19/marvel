@@ -104,7 +104,7 @@
 				<tr>
 					<th>Titulo</th>
 					<th>Fase</th>
-					<th>Superhero</th>
+					<th>Superheroe</th>
 					<th></th>
 				</tr>
 				{#each peliculas as p}
@@ -206,4 +206,3 @@
 	</div>
 
 </main>
-
