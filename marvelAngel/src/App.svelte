@@ -16,6 +16,7 @@
 		titulo: "",
 		fase: "",
 		descripcion: "",
+		protagonista: "",
 	};
 
 	let peliculas = [];
@@ -61,6 +62,7 @@
 			titulo: "",
 			fase: "",
 			descripcion: "",
+			protagonista: "",
 		};
 	};
 
@@ -143,9 +145,8 @@
     
 
 			<label for="super">Superheroe</label>
-	<!--    bind:value={pelicula.fase}    ******  va dentro del select    -->
-			<select id="fase">
-				{#each superheroes as s, i}
+			<select bind:value={pelicula.protagonista} id="super" >
+				{#each superheroes as s}
 					<option value="{s.id}">{s.nombre}</option>
 				{/each}
 			</select>
@@ -176,6 +177,7 @@
 			</div>
 		{/each}
 		
+		
 
 		<form on:submit|preventDefault={onSubmitHandler2}>
 			<label for="nombre">Nombre del superheroe</label>
@@ -205,3 +207,4 @@
 	</div>
 
 </main>
+
